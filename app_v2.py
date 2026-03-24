@@ -2,8 +2,6 @@ import random
 import json
 import streamlit as st
 
-from main import run_spin
-
 def load_tasks():
     with open("data/tasks.json", "r", encoding="utf-8") as file:
         return json.load(file)
@@ -64,7 +62,7 @@ with col1:
         score, msg = get_result(spin_result)
         category, task = get_rndm_task()
 
-        st.session_state.last_spin = score
+        st.session_state.last_spin = spin_result
         st.session_state.last_msg = msg
         st.session_state.last_points = score
         st.session_state.last_category = category
