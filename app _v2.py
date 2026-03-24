@@ -36,37 +36,60 @@ def get_result(spin_result):
 st.set_page_config(page_title="Good Deed Spinner", page_icon="🌟")
 
 st.title("🌟 Good Deed Spinner")
-st.write("A beginner-friendly halal spinner app for good deeds, study, health, and kindness tasks.")
+st.markdown("A beginner-friendly halal spinner app for good deeds, study, health, and kindness tasks.")
 
 if "total_score" not in st.session_state:
     st.session_state.total_score = 0
     
 if "last_spin" not in st.session_state:
-    st.session_state.total_score = 0
+    st.session_state.last_spin = None
 
 if "last_msg" not in st.session_state:
-    st.session_state.total_score = 0
-    
+    st.session_state.last_msg = ""
+
 if "last_points" not in st.session_state:
-    st.session_state.total_score = 0
-    
+    st.session_state.last_points = 0
+
 if "last_category" not in st.session_state:
-    st.session_state.total_score = 0
+    st.session_state.last_category = ""
 
 if "last_task" not in st.session_state:
-    st.session_state.total_score = 0
+    st.session_state.last_task = ""
 
-if st.button("Spin"):
-    spin_result = spin_symbols()
-    score, msg = get_result(spin_result)
-    category, task = get_rndm_task()
+col1, col2 = st.columns(2)
 
-    st.write("Spinning...")
-    st.write(" | ".join(spin_result))
-    st.write(msg)
-    st.write(f"Your score: {score}")
-    st.write(f"Your good deed category: {category}")
-    st.write(f"Your good deed task: {task}")
+with col1:
+    if st.button("Spin"):
+        spin_result = spin_symbols()
+        score, msg = get_result(spin_result)
+        category, task = get_rndm_task()
 
-    st.session_state.total_score += score
-st.write(f"Total Score: {st.session_state.total_score}")
+        st.session_state.last_spin = score
+        st.session_state.last_msg = msg
+        st.session_state.last_points = score
+        st.session_state.last_category = category
+        st.session_state.last_task = task
+        st.session_state.total_score += score
+
+with  col2:
+    if st.button("Reset Score"):
+        st.session_state.total_score = 0
+        st.session_state.last_spin = None
+        st.session_state.last_msg = ""
+        st.session_state.last_points = 0
+        st.session_state.last_category = ""
+        st.session_state.last_task = ""
+  
+st.markdown(f"## Total Score: {st.session_state.total_score}")    
+
+if st.session_state.last_spin is not None:
+    st.markdown("Spin Result:")
+    st.markdown(f"### {' | '.join(st.session_state.last_spin)}")
+
+    st.success(st.session_state.last_msg)
+    st.write(f"**Points earned this round:** {st.session_state.last_points}")
+    st.write(f"**Task category:** {st.session_state.last_category}")    
+    st.write(f"**Task:** {st.session_state.last_task}")
+
+else:
+    st.info("Click the Spin button to get your first result")
